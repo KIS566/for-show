@@ -9,6 +9,31 @@
   <meta name="author" content="CodeShalaByKMFL">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+  
+  
+  
+  
+  
+  
+  
+  .contact-form .btn {
+  border: 2px solid #000000;
+  color: cyan;  /* text color black */
+  background: transparent;
+}
+
+.contact-form .btn:hover {
+  background: #FFD000;
+  color: black;  /* hover par bhi black */
+  border-color: #FFD000;
+}
+
+
+
+
+
+
+
     * {
       margin: 0;
       padding: 0;
@@ -476,11 +501,12 @@
     .video-container {
       position: relative;
       width: 100%;
+      max-width: 400px; /* Made video smaller */
+      margin: 0 auto 10px auto;
       aspect-ratio: 16/9;
       border-radius: 16px;
       overflow: hidden;
       border: 2px solid #FFD000;
-      margin-bottom: 10px;
       animation: videoPulse 3s infinite alternate;
     }
     @keyframes videoPulse {
@@ -525,7 +551,7 @@
       100% { transform: scale(1); }
     }
 
-    /* ----- DYNAMIC REVIEWS SECTION (Fixed with working backend) ----- */
+    /* ----- DYNAMIC REVIEWS SECTION ----- */
     #reviews {
       padding: 15px 0 30px 0;
     }
@@ -597,6 +623,14 @@
       width: 100%;
       padding: 12px;
       font-size: 1.1rem;
+      border: 2px solid #000000; /* Black outline */
+      background: transparent;
+      color: #FFD000;
+    }
+    .submit-review-btn:hover {
+      background: #FFD000;
+      color: #000000;
+      border-color: #FFD000;
     }
     .reviews-grid {
       display: grid;
@@ -708,6 +742,9 @@
     @keyframes formGlow {
       0% { box-shadow: 0 0 10px rgba(255,208,0,0.1); }
       100% { box-shadow: 0 0 30px rgba(255,208,0,0.3); }
+    }
+    .contact-form .btn {
+      border: 2px solid #000000; /* Black outline for contact button */
     }
 
     footer {
@@ -856,15 +893,15 @@
     </div>
   </section>
 
-  <!-- Fixed Dynamic Reviews Section with Working Backend -->
+  <!-- Dynamic Reviews Section -->
   <section id="reviews">
     <h2 class="reveal">Student Reviews</h2>
     
     <div class="review-form-container glass-card reveal">
-      <h3>अपना अनुभव साझा करें</h3>
+      <h3>Share Your Experience</h3>
       <form id="reviewSubmitForm">
         <div class="input-group">
-          <input type="text" id="reviewerName" placeholder="आपका नाम *" required>
+          <input type="text" id="reviewerName" placeholder="Your Name *" required>
         </div>
         <div class="input-group">
           <div class="star-rating" id="starRatingWidget">
@@ -877,29 +914,29 @@
           <input type="hidden" id="ratingValue" value="5">
         </div>
         <div class="input-group">
-          <textarea id="reviewMessage" rows="3" placeholder="आपका संदेश *" required></textarea>
+          <textarea id="reviewMessage" rows="3" placeholder="Your Message *" required></textarea>
         </div>
-        <button type="submit" class="btn submit-review-btn">Review Submit करें</button>
+        <button type="submit" class="btn submit-review-btn">Submit Review</button>
       </form>
     </div>
 
     <div id="reviewsContainer" class="reviews-grid">
-      <div class="loader"><i class="fas fa-spinner"></i> Reviews लोड हो रहे हैं...</div>
+      <div class="loader"><i class="fas fa-spinner"></i> Loading reviews...</div>
     </div>
   </section>
 
   <section id="contact">
-    <h2 class="reveal">Connect with us</h2>
+    <h2 class="reveal">Contact With Us</h2>
     <div class="contact-form glass-card reveal">
       <form id="contactForm" action="https://formspree.io/f/xovebyjq" method="POST">
         <div class="input-group">
-          <input type="text" name="name" placeholder="आपका नाम *" required>
+          <input type="text" name="name" placeholder="Your Name *" required>
         </div>
         <div class="input-group">
           <input type="email" name="email" placeholder="Email *" required>
         </div>
         <div class="input-group">
-          <textarea name="message" rows="3" placeholder="आपका संदेश *" required></textarea>
+          <textarea name="message" rows="3" placeholder="Your Message *" required></textarea>
         </div>
         <button type="submit" class="btn" style="width:100%;">Send Message</button>
       </form>
@@ -975,13 +1012,15 @@
       }
       setTimeout(typeWriter, 800);
 
-      // Stats animation
+      // Stats animation - very slow (10-12 seconds)
       function animateStats() {
         document.querySelectorAll('.stat-number').forEach(stat => {
           let target = +stat.getAttribute('data-target');
           let count = +stat.innerText;
           if (count < target) {
-            stat.innerText = Math.ceil(count + target/30);
+            // Very slow increment - divide by 600 for ~10 second animation (600 * 15ms = 9 seconds)
+            // For 50000 target, this will take about 50000/(50000/600) = 600 steps * 15ms = 9 seconds
+            stat.innerText = Math.ceil(count + target/6000);
             setTimeout(animateStats, 15);
           } else stat.innerText = target;
         });
@@ -1036,7 +1075,7 @@
         });
       });
 
-      // ========== DYNAMIC REVIEWS (Working with correct backend URL) ==========
+      // ========== DYNAMIC REVIEWS ==========
       const scriptURL = "https://script.google.com/macros/s/AKfycbzQVs6xzTxiRNZTAT_n1tPjtrefkQjzizD8DXlQXWixqaQ53HFUPcw0SZVm8SCDa-iW/exec";
       const reviewsContainer = document.getElementById('reviewsContainer');
       const submitForm = document.getElementById('reviewSubmitForm');
@@ -1089,7 +1128,7 @@
       // Load reviews
       async function loadReviews() {
         try {
-          reviewsContainer.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Reviews लोड हो रहे हैं...</div>';
+          reviewsContainer.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Loading reviews...</div>';
           
           const response = await fetch(scriptURL + "?action=getReviews&t=" + Date.now(), {
             method: 'GET',
@@ -1102,7 +1141,7 @@
           const reviews = data.reviews || [];
           
           if (reviews.length === 0) {
-            reviewsContainer.innerHTML = '<div class="empty-state">✨ कोई समीक्षा नहीं अभी। सबसे पहले समीक्षा लिखें! ✨</div>';
+            reviewsContainer.innerHTML = '<div class="empty-state">✨ No reviews yet. Be the first to review! ✨</div>';
             return;
           }
           
@@ -1113,7 +1152,7 @@
               <div class="review-header">
                 <div class="review-avatar">${(r.name || 'A').charAt(0).toUpperCase()}</div>
                 <div class="review-info">
-                  <div class="review-name">${r.name || 'अनाम'}</div>
+                  <div class="review-name">${r.name || 'Anonymous'}</div>
                   <div class="review-date">${formatDate(r.timestamp)}</div>
                 </div>
               </div>
@@ -1124,19 +1163,19 @@
           });
         } catch (err) {
           console.error('Load error:', err);
-          reviewsContainer.innerHTML = '<div class="empty-state">❌ Reviews लोड नहीं हो सके। बाद में प्रयास करें।</div>';
+          reviewsContainer.innerHTML = '<div class="empty-state">❌ Unable to load reviews. Please try again later.</div>';
         }
       }
 
       // Submit review
       submitForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const name = nameInput.value.trim() || 'अनाम';
+        const name = nameInput.value.trim() || 'Anonymous';
         const message = msgInput.value.trim();
         const rating = parseInt(ratingInput.value, 10) || 5;
         
         if (!message) { 
-          alert('कृपया संदेश लिखें'); 
+          alert('Please write a message'); 
           return; 
         }
 
@@ -1161,7 +1200,7 @@
           const result = await response.text();
           
           if (result.includes("Success") || result.includes("success")) {
-            alert('✅ Review सफलतापूर्वक जमा हुआ! धन्यवाद।');
+            alert('✅ Review submitted successfully! Thank you.');
             nameInput.value = ''; 
             msgInput.value = '';
             currentRating = 5; 
@@ -1172,7 +1211,7 @@
             });
             
             // Refresh reviews
-            reviewsContainer.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Reviews लोड हो रहे हैं...</div>';
+            reviewsContainer.innerHTML = '<div class="loader"><i class="fas fa-spinner"></i> Loading reviews...</div>';
             loadReviews();
           } else {
             alert('❌ Error: ' + result);
